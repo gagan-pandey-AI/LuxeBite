@@ -1,6 +1,10 @@
 import "server-only";
 import { menuItems } from "@/data/menu";
-import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import {
+  getSupabaseAdminClient,
+  hasSupabaseAdminConfig,
+} from "@/lib/supabase/admin";
+import { getSupabasePublicConfig } from "@/lib/supabase/config";
 import type { MenuDish } from "@/types/menu";
 
 export async function getPublicMenu(): Promise<{
@@ -9,9 +13,7 @@ export async function getPublicMenu(): Promise<{
   isConceptPreview: boolean;
 }> {
   const configured = Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY?.trim(),
+    getSupabasePublicConfig() && hasSupabaseAdminConfig(),
   );
   if (!configured) {
     return { dishes: menuItems, databaseError: false, isConceptPreview: true };

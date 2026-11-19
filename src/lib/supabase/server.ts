@@ -1,13 +1,19 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
-import { getSupabasePublicConfig } from "@/lib/supabase/config";
+import {
+  getSupabasePublicConfig,
+  getSupabasePublicConfigurationIssue,
+} from "@/lib/supabase/config";
 
 export async function createServerSupabaseClient() {
   const config = getSupabasePublicConfig();
 
   if (!config) {
-    throw new Error("Supabase authentication is not configured.");
+    throw new Error(
+      getSupabasePublicConfigurationIssue() ??
+        "Supabase authentication configuration is unavailable.",
+    );
   }
 
   const cookieStore = await cookies();
